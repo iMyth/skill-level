@@ -57,7 +57,7 @@ export default {
       default: () => LEVEL
     },
     selectedStyle: {
-      type: String,
+      type: Object,
       default: () => ({
         color: '#74C786'
       })
