@@ -85,7 +85,7 @@ export default {
     this.spinnerStyle = {
       left: `${this.getSpinnerLeft()}px`
     }
-    for (let i = 0; i < this.levelLength; i++) {
+    for (let i = 0, l = this.levelLength; i < l; i++) {
       this.milestones.push(this.getMilestoneLeft(i))
     }
   },
