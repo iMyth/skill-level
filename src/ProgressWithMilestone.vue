@@ -9,12 +9,14 @@
       :key="index"
     >
       <div class="milestone"></div>
+      <!-- buggie, manually set color -->
       <text
-        :style="currentIndex === index ? selectedStyle : {}"
+        :style="currentIndex === index ? selectedStyle : { color: '#888888' }"
         class="text"
       >{{item}}</text>
     </div>
     <div
+      :style="spinnerStyle"
       @panmove="onTouchMove"
       @panend="onTouchEnd"
       ref="spinner"
@@ -26,10 +28,10 @@
 <script>
 import { getNearestNumberOfArray } from './util.js'
 
+const LEVEL = [ 'Beginner', 'Intermediate', 'Advanced', 'Expert' ]
+
 const animation = weex.requireModule('animation')
 const { env } = weex.config
-
-const LEVEL = [ 'Beginner', 'Intermediate', 'Advanced', 'Expert' ]
 
 const offsetLeft = 50
 const pointWidth = 80
@@ -38,7 +40,9 @@ const spinnerWidth = 44
 
 const getOffsetLeft = e => {
   let radius = spinnerWidth / 2
-  let offset = e.pageX / env.scale - radius
+  // buggie
+  // let offset = e.pageX / env.scale - radius
+  let offset = e.pageX - radius
   let minOffset = offsetLeft - radius
   if (offset < minOffset) {
     return minOffset
@@ -81,10 +85,12 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
     this.spinnerStyle = {
-      left: `${this.getSpinnerLeft()}px`
+      // left: `${this.getSpinnerLeft()}px`
+      transform: `translateX(${this.getSpinnerLeft()}px)`
     }
+    console.log(this.spinnerStyle)
     for (let i = 0, l = this.levelLength; i < l; i++) {
       this.milestones.push(this.getMilestoneLeft(i))
     }
@@ -92,7 +98,8 @@ export default {
   methods: {
     getMilestoneStyle (index) {
       return {
-        left: `${this.getMilestoneLeft(index)}px`
+        // left: `${this.getMilestoneLeft(index)}px`
+        transform: `translateX(${this.getMilestoneLeft(index)}px)`
       }
     },
     getMilestoneLeft (index) {
@@ -108,7 +115,8 @@ export default {
       this.currentIndex = index
       animation.transition(this.$refs.spinner, {
         styles: {
-          left: `${this.getSpinnerLeft()}px`
+          // left: `${this.getSpinnerLeft()}px`
+          transform: `translateX(${this.getSpinnerLeft()}px)`
         },
         timingFunction: 'ease',
         duration: 200
@@ -118,7 +126,8 @@ export default {
     onTouchMove (e) {
       animation.transition(this.$refs.spinner, {
         styles: {
-          left: `${getOffsetLeft(e.changedTouches[0])}px`
+          transform: `translateX(${getOffsetLeft(e.changedTouches[0])}px)`
+          // left: `${getOffsetLeft(e.changedTouches[0])}px`
         },
         timingFunction: 'ease',
         duration: 0
@@ -152,12 +161,11 @@ export default {
 .spinner {
   position: absolute; height: 44px; width: 44px; border-radius: 22px;
   background-color: #F6F6F6; border-style: solid; border-width: 1px;
-  border-color: #898989; top: 48px; left: 38px;
-  background-image: linear-gradient(-180deg, #FFFFFF 0%, #EEEEEE 100%);
-  box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+  border-color: #898989; top: 48px; /** left: 38px; **/
+  background-image: linear-gradient(to bottom, #FFFFFF, #EEEEEE);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 .text {
   font-size: 28px; color: #888888; margin-top: 28px;
 }
 </style>
-
